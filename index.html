@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Relatório Diário de Manutenção Hospitalar</title>
+    
+    <style>
+        * { 
+            box-sizing: border-box; 
+            touch-action: manipulation;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            margin: 0;
+            padding: 12px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #0284c7;
+            font-size: 20px;
+            margin-top: 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 13px; 
+            color: #64748b; 
+            margin-top: -6px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0f172a;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background-color: #e0f2fe;
+            padding: 10px 12px;
+            border-left: 4px solid #0284c7;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        input[type="text"], input[type="date"], select, textarea {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            min-height: 48px;
+            background-color: #fff;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.4;
+        }
+
+        .relatorio-geral-textarea {
+            min-height: 150px;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            border-color: #0284c7;
+            background-color: #f8fafc;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table.input-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            min-width: 650px;
+        }
+
+        table.input-table th {
+            background-color: #f8fafc;
+            text-align: left;
+            padding: 10px 8px;
+            font-size: 12px;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        table.input-table td {
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        table.input-table input, table.input-table select, table.input-table textarea {
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        .os-number {
+            text-align: center;
+            font-weight: bold;
+            color: #64748b;
+            font-size: 13px;
+            padding-top: 12px !important;
+        }
+
+        .table-actions {
+            margin-top: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .btn-add {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .btn-remove-last {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-delete-row {
+            background-color: #fee2e2;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-upload-card {
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 14px;
+            background-color: #f8fafc;
+            margin-bottom: 16px;
+        }
+
+        .photo-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .photo-upload-card-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0369a1;
+        }
+
+        .file-input-hidden {
+            display: none !important;
+        }
+
+        .upload-btn-box {
+            border: 2px dashed #0284c7;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .photos-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .photo-item-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .btn-remove-photo {
+            margin-top: 8px;
+            background-color: #fee2e2;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-submit {
+            background-color: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 25px;
+            min-height: 54px;
+            display: block;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; padding: 0 !important; }
+            .container { box-shadow: none !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+            .btn-submit, .table-actions, .btn-delete-row, .btn-remove-photo, .upload-btn-box { display: none !important; }
+            textarea, input, select { 
+                border: none !important; 
+                padding: 4px 0 !important; 
+                background: transparent !important; 
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="conteudoParaPDF">
+    <h1>⚡ Relatório Diário de Manutenção Hospitalar</h1>
+    <div class="subtitle">Formulário otimizado para celulares e computadores. Preencha os campos e salve em PDF.</div>
+
+    <form id="relatorioForm" onsubmit="return false;">
+        <div class="section-title">1. Informações Gerais</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="hospital">Nome do Hospital / Unidade:</label>
+                <input type="text" value="HOSPITAL UNIVERSITARIO HU-UFSJ" id="hospital">
+            </div>
+            <div class="form-group">
+                <label for="data">Data:</label>
+                <input type="date" id="data">
+            </div>
+            <div class="form-group">
+                <label for="encarregado">Encarregado Responsável:</label>
+                <input type="text" placeholder="Seu nome" id="encarregado">
+            </div>
+            <div class="form-group">
+                <label for="supervisora">Supervisora / Engenharia:</label>
+                <input type="text" placeholder="Nome" id="supervisora">
+            </div>
+            <div class="form-group">
+                <label for="turno">Turno de Trabalho:</label>
+                <input type="text" value="07:00 as 17:00 - Diurno" id="turno">
+            </div>
+            <div class="form-group">
+                <label for="efetivo">Efetivo do Dia:</label>
+                <input type="text" value="2 Eletricistas + 1 Encarregado" id="efetivo">
+            </div>
+        </div>
+
+        <div class="section-title">2. Ordens de Serviço</div>
+        <div class="table-responsive">
+            <table class="input-table" id="tabelaOS">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">#</th>
+                        <th style="width: 15%;">Nº OS</th>
+                        <th style="width: 25%;">Setor / Local</th>
+                        <th style="width: 35%;">Descrição do Serviço</th>
+                        <th style="width: 10%;">Prioridade</th>
+                        <th style="width: 10%;">Status</th>
+                        <th style="width: 5%; text-align: center;" class="no-print">Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaOS"></tbody>
+            </table>
+        </div>
+
+        <div class="table-actions no-print">
+            <button type="button" class="btn-action btn-add" id="btnAdicionarOS">➕ Adicionar OS</button>
+            <button type="button" class="btn-action btn-remove-last" id="btnRemoverOS">🗑️ Remover Última OS</button>
+        </div>
+
+        <div class="section-title">3. Registro Fotográfico</div>
+        <div id="containerFotos"></div>
+
+        <div class="table-actions no-print">
+            <button type="button" class="btn-action btn-add" id="btnAdicionarBlocoFoto">📷 Adicionar Bloco de Fotos</button>
+            <button type="button" class="btn-action btn-remove-last" id="btnRemoverBlocoFoto">🗑️ Remover Último Bloco</button>
+        </div>
+
+        <div class="section-title">4. Relatório Geral / Observações Finais</div>
+        <div class="form-group">
+            <label for="relatorioGeral">Resumo das Atividades / Pendências / Ocorrências do Dia:</label>
+            <textarea id="relatorioGeral" class="relatorio-geral-textarea" placeholder="Descreva aqui um resumo geral do dia..."></textarea>
+        </div>
+
+        <button type="button" class="btn-submit no-print" id="btnSalvarPDF">💾 Salvar em PDF / Imprimir</button>
+    </form>
+</div>
+
+<script>
+    let contadorBlocosFotos = 0;
+    document.getElementById('data').valueAsDate = new Date();
+
+    function adicionarOS() {
+        const tbody = document.getElementById('corpoTabelaOS');
+        const novaLinha = document.createElement('tr');
+        novaLinha.innerHTML = `
+            <td class="os-number"></td>
+            <td><input type="text" placeholder="#OS"></td>
+            <td><input type="text" placeholder="Local / Setor"></td>
+            <td><textarea placeholder="Descrição..."></textarea></td>
+            <td><select><option>Média</option><option>Alta</option><option>Baixa</option></select></td>
+            <td><select><option>Concluído</option><option>Em Andamento</option><option>Pendente</option></select></td>
+            <td style="text-align: center;" class="no-print">
+                <button type="button" class="btn-delete-row" onclick="this.closest('tr').remove(); atualizarNumeracaoOS();">✕</button>
+            </td>
+        `;
+        tbody.appendChild(novaLinha);
+        atualizarNumeracaoOS();
+    }
+
+    function atualizarNumeracaoOS() {
+        document.querySelectorAll('#corpoTabelaOS tr').forEach((linha, index) => {
+            const numTd = linha.querySelector('.os-number');
+            if (numTd) numTd.textContent = index + 1;
+        });
+    }
+
+    function adicionarBlocoFoto() {
+        contadorBlocosFotos++;
+        const container = document.getElementById('containerFotos');
+        const novoCard = document.createElement('div');
+        novoCard.className = 'photo-upload-card';
+        const inputId = `file_input_${contadorBlocosFotos}`;
+        const previewGridId = `preview_grid_${contadorBlocosFotos}`;
+
+        novoCard.innerHTML = `
+            <div class="photo-card-header">
+                <div class="photo-upload-card-title">📷 Registro Fotográfico <span class="foto-number"></span></div>
+                <button type="button" class="btn-delete-row no-print" onclick="this.closest('.photo-upload-card').remove();">✕ Excluir Bloco</button>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Identificação do Serviço / OS / Observações:</label>
+                <textarea placeholder="Ex: Fotos do painel antes e depois..."></textarea>
+            </div>
+            <input type="file" id="${inputId}" accept="image/*" multiple class="file-input-hidden" onchange="adicionarVariasFotos(this, '${previewGridId}')">
+            <div class="upload-btn-box no-print" onclick="document.getElementById('${inputId}').click();">
+                <div style="font-size: 24px;">📷</div>
+                <div style="font-size: 13px; font-weight: 600; color: #475569;">Toque para selecionar fotos</div>
+            </div>
+            <div id="${previewGridId}" class="photos-preview-grid"></div>
+        `;
+        container.appendChild(novoCard);
+    }
+
+    function adicionarVariasFotos(input, previewGridId) {
+        const grid = document.getElementById(previewGridId);
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const cardItem = document.createElement('div');
+                    cardItem.className = 'photo-item-card';
+                    cardItem.innerHTML = `
+                        <img src="${e.target.result}" class="preview-img">
+                        <button type="button" class="btn-remove-photo no-print" onclick="this.parentElement.remove()">🗑️ Excluir</button>
+                    `;
+                    grid.appendChild(cardItem);
+                }
+                reader.readAsDataURL(file);
+            });
+            input.value = "";
+        }
+    }
+
+    document.getElementById('btnAdicionarOS').onclick = adicionarOS;
+    document.getElementById('btnRemoverOS').onclick = () => {
+        const tbody = document.getElementById('corpoTabelaOS');
+        if (tbody.children.length > 0) { tbody.removeChild(tbody.lastElementChild); atualizarNumeracaoOS(); }
+    };
+    document.getElementById('btnAdicionarBlocoFoto').onclick = adicionarBlocoFoto;
+    document.getElementById('btnSalvarPDF').onclick = () => window.print();
+
+    // Inicializa com 2 linhas e 1 bloco de fotos
+    adicionarOS();
+    adicionarOS();
+    adicionarBlocoFoto();
+</script>
+</body>
+</html>
